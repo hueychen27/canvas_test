@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .verySpecial {
+            font-size: larger;
+            text-decoration: dotted;
+            color: blueviolet;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+
+        .stic {
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        #tool {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            border: 1px solid black;
+            background-color: aquamarine;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20%;
+            height: max-content;
+        }
+
+        .cool {
+            text-decoration: slategray wavy underline;
+        }
+
+        #remove {
+            border-radius: 2px;
+            background-color: antiquewhite;
+            padding: 15px;
+        }
+
+        #remove:hover {
+            background-color: burlywood;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Wow canvas wow</h1>
+    <p>so special <span class="verySpecial" title="wow!">canvas</span></p>
+    <div class="stic">
+        <div id="tool">
+            <h1 class="cool">cool toolbar</h1>
+            <label for="colour">Color: <input type="color" id="colour"></label>
+            <button id="remove">Remove aaaallll</button>
+        </div>
+        <canvas height="1000" style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1">This is a test canvas element.</canvas>
+    </div>
+    <script>
+        // some code is from https://dev.to/javascriptacademy/create-a-drawing-app-using-javascript-and-canvas-2an1
+        const canvas = document.getElementById("test1");
+        const ctx = canvas.getContext("2d");
+        const thing = document.getElementById("tool");
+        const canvasOffsetX = canvas.offsetLeft;
+        const canvasOffsetY = canvas.offsetTop;
+        canvas.width = window.innerWidth - canvasOffsetX;
+        let isPainting = false;
+        let lineWidth = 5;
+        let startX;
+        let startY;
+        const clear = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        thing.addEventListener('click', e => {
+            if (e.target.id === 'remove') {
+                clear();
+            }
+        });
+        thing.addEventListener("change", e => {
+            if (e.target.id === 'colour') {
+                ctx.strokeStyle = e.target.value;
+            }
+        })
+        document.addEventListener("keydown", (e) => {
+            if (e.key = "c") clear();
+        })
+        canvas.addEventListener('mousedown', (e) => {
+            isPainting = true;
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        canvas.addEventListener('mouseup', e => {
+            isPainting = false;
+            ctx.stroke();
+            ctx.beginPath();
+        });
+        const draw = (e) => {
+            if (!isPainting) {
+                return;
+            }
+
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = 'round';
+
+            ctx.lineTo(e.offsetX - canvasOffsetX, e.offsetY);
+            ctx.stroke();
+        }
+
+
+        canvas.addEventListener('mousemove', draw);
+
+        // ctx.font = "30px Arial";
+        // ctx.fillText("Hello World", 10, 50);
+        // ctx.beginPath();
+        // ctx.moveTo(250, 250);
+        // ctx.lineTo(200, 300);
+        // ctx.lineTo(300, 200)
+        // ctx.stroke()
+        // ctx.fillRect(100, 100, 300, 69)
+    </script>
+</body>
+
+</html>
