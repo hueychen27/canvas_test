@@ -42,13 +42,13 @@
             text-decoration: slategray wavy underline;
         }
 
-        #remove {
+        .btn {
             border-radius: 2px;
             background-color: antiquewhite;
             padding: 15px;
         }
 
-        #remove:hover {
+        .btn:hover {
             background-color: burlywood;
         }
     </style>
@@ -61,7 +61,9 @@
         <div id="tool">
             <h1 class="cool">cool toolbar</h1>
             <label for="colour">Color: <input type="color" id="colour"></label>
-            <button id="remove">Remove aaaallll</button>
+            <button class="btn" id="save">I need to save this</button>
+            <button class="btn" id="upload">load!!!</button>
+            <button id="remove" class="btn">Remove aaaallll</button>
         </div>
         <canvas height="1000" style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1">This is a test canvas element.</canvas>
     </div>
@@ -83,6 +85,17 @@
         thing.addEventListener('click', e => {
             if (e.target.id === 'remove') {
                 clear();
+            }
+            if (e.target.id === 'save') {
+                localStorage.setItem("thingy", canvas.toDataURL());
+            }
+            if (e.target.id === 'upload') {
+                let dataURL = localStorage.getItem("thingy");
+                let img = new Image;
+                img.src = dataURL;
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                };
             }
         });
         thing.addEventListener("change", e => {
