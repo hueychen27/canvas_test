@@ -96,6 +96,7 @@
         </div>
         <canvas style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1">This is a test canvas element.</canvas>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // some code is from https://dev.to/javascriptacademy/create-a-drawing-app-using-javascript-and-canvas-2an1
         const canvas = document.getElementById("test1");
@@ -126,6 +127,34 @@
         const clear = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
+        const popup = async (txt, icon, title, cbt, dbt) => {
+            await Swal.fire({
+                title: title,
+                text: txt,
+                icon: icon,
+                confirmButtonText: cbt,
+                showCancelButton: true,
+                cancelButtonText: dbt
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    clear();
+                }
+                load();
+            })
+        }
+        const load = () => {
+            let dataURL = localStorage.getItem("thingy");
+            let img = new Image;
+            img.src = dataURL;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0);
+            };
+            power = JSON.parse(localStorage.getItem("power"));
+            thickness = JSON.parse(localStorage.getItem("thickness"));
+            eval(`if (type.value != 'normal') document.getElementById('power').value = power.${type.value}`);
+            eval(`if (type.value == 'normal') document.getElementById('power').value = ''`);
+            changeThickness();
+        }
         thing.addEventListener('click', e => {
             if (e.target.id === 'remove') {
                 clear();
@@ -136,14 +165,7 @@
                 localStorage.setItem("thickness", JSON.stringify(thickness));
             }
             if (e.target.id === 'upload') {
-                let dataURL = localStorage.getItem("thingy");
-                let img = new Image;
-                img.src = dataURL;
-                img.onload = function () {
-                    ctx.drawImage(img, 0, 0);
-                };
-                power = JSON.parse(localStorage.getItem("power"));
-                thickness = JSON.parse(localStorage.getItem("thickness"));
+                popup("Do you want to remove current drawing?", "info", "???", "yes", "noo1!!")
             }
         });
         thing.addEventListener("change", e => {
@@ -153,8 +175,8 @@
             }
             if (e.target.id === 'type') {
                 if (type.value == 'normal') document.getElementById("power").value = "";
-                eval(`if (type.value != 'normal') document.getElementById('power').value = power.${type.value}`)
-                eval(`if (type.value == 'normal') document.getElementById('power').value = ''`)
+                eval(`if (type.value != 'normal') document.getElementById('power').value = power.${type.value}`);
+                eval(`if (type.value == 'normal') document.getElementById('power').value = ''`);
                 changeThickness();
             }
             if (e.target.id === 'power') {
