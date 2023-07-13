@@ -141,7 +141,7 @@ canvas.addEventListener('mousedown', (e) => {
     startY = e.clientY;
 });
 
-canvas.addEventListener('mouseup', e => {
+window.addEventListener('mouseup', e => {
     isPainting = false;
     ctx.beginPath();
 });
