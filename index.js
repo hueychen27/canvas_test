@@ -165,6 +165,7 @@ canvas.addEventListener('mouseup', () => {
     isPainting = false;
     ctx.beginPath();
     pathsry.push(canvas.toDataURL());
+    removePathRedo();
     undo.removeAttribute("disabled");
 });
 canvas.addEventListener("mouseover", () => {
