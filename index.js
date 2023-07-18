@@ -15,6 +15,8 @@ let startX;
 let startY;
 let power;
 let thickness;
+let pathsry = [];
+let mouseover;
 const changeThickness = () => {
     if (type.value != 'stretcher') {
         thicknessEl.value = eval(`thickness.${type.value}`)
@@ -83,6 +85,7 @@ const popup = async (txt, icon, title, cbt, dbt) => {
 }
 const load = (base64) => {
     let dataURL = localStorage.getItem("thingy");
+    pathsry.push(dataURL);
     console.log(dataURL)
     if (base64) {
         Swal.fire({
@@ -115,6 +118,7 @@ thing.addEventListener('click', e => {
     }
     if (e.target.id === 'remove') {
         clear();
+        pathsry.push(canvas.toDataURL());
     }
 });
 thing.addEventListener("change", e => {
@@ -136,18 +140,28 @@ document.onkeydown = (e) => {
     if (e.key == "c") clear();
 }
 canvas.addEventListener('mousedown', (e) => {
+    if (mouseover == false) return;
     isPainting = true;
     startX = e.clientX;
     startY = e.clientY;
 });
 
-window.addEventListener('mouseup', e => {
+canvas.addEventListener('mouseup', () => {
     isPainting = false;
     ctx.beginPath();
+    pathsry.push(canvas.toDataURL());
 });
+canvas.addEventListener("mouseover", () => {
+    mouseover = true;
+})
+canvas.addEventListener("mouseleave", () => {
+    mouseover = false;
+    isPainting = false;
+    ctx.beginPath();
+})
 const draw = (e) => {
     // some code is from https://stackoverflow.com/a/16452675/15055490
-    if (!isPainting) return;
+    if (!isPainting && mouseover) return;
     if (document.getElementById("mode").value == "erase") {
         ctx.globalCompositeOperation = "destination-out";
     } else {
@@ -176,13 +190,33 @@ const draw = (e) => {
     }
     if (type.value == 'stretcher') {
         //ctx.arc code from https://stackoverflow.com/questions/25907163/html5-canvas-eraser-tool-without-overdraw-white-color
-        ctx.arc(e.offsetX, e.offsetY, 0, 0, Math.PI * 2, false);
+        ctx.arc(e.offsetX - canvasOffsetX, e.offsetY, 0, 0, Math.PI * 2, false);
         ctx.fill();
     }
 }
 
 
 canvas.addEventListener('mousemove', draw);
+
+// Undo function https://stackoverflow.com/a/53961111/15055490
+function drawPaths() {
+    clear();
+    let img = new Image();
+    img.src = pathsry[pathsry.length - 1];
+    img.onload = () => {
+        ctx.drawImage(img, 0, 0);
+    };
+}
+
+function Undo() {
+    pathsry.pop();
+    drawPaths();
+}
+
+document.getElementById("undo").addEventListener("click", Undo);
+document.onkeydown = (e) => {
+    if (e.ctrlKey && e.key == "z") Undo();
+}
 
 // ctx.font = "30px Arial";
 // ctx.fillText("Hello World", 10, 50);

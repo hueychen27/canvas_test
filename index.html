@@ -59,9 +59,22 @@
             -moz-appearance: textfield;
             appearance: textfield;
         }
+
+        .undo-redo-div {
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .special-btn {
+            padding: 3px;
+            background-color: beige;
+        }
+
+        .special-btn:hover {
+            background-color: antiquewhite;
+        }
     </style>
     <link href="Notepad.png" rel="icon" type="image/png">
-    <script src="index.js" defer></script>
 </head>
 
 <body>
@@ -70,9 +83,8 @@
     <div class="stic">
         <div id="tool">
             <h1 class="cool">cool toolbar</h1>
-            <label for="colour">Color: <input type="color" id="colour"></label>
-            <label></label>
-            <label for="type">
+            <label for="colour" title="Choose color of the pen (does not apply to eraser)">Color: <input type="color" id="colour"></label>
+            <label for="type" title="Select type of pen to use.">
                 Type:
                 <select id="type">
                     <option value="normal" selected>Normal (Default)</option>
@@ -85,29 +97,33 @@
                     </optgroup>
                 </select>
             </label>
-            <label for="thickness">
+            <label for="thickness" title="Choose the amount of thickness of the pen or eraser for most types.">
                 Thickness:
                 <input type="number" value="5" id="thickness" onkeypress="return (event.key >= 0 && event.key <= 9) && (document.getElementById('type').value != 'stretcher')" min="1">
             </label>
-            <label for="power">
+            <label for="power" title="Choose the amount of power for fireworks or lightning.">
                 Power:
                 <input type="number" value="" id="power" class="hideArrows" onkeypress="return ((event.key >= 0 && event.key <= 9) && (document.getElementById('type').value != 'normal' && document.getElementById('type').value != 'stretcher'))" min="1">
             </label>
-            <label for="mode">
+            <label for="mode" title="Select mode (Paint/Erase) to use.">
                 Mode:
                 <select id="mode">
                     <option value="" selected>Paint</option>
                     <option value="erase">Erase</option>
                 </select>
             </label>
-            <button id="reset" class="btn">Reset Thickness and Power Values</button>
-            <button class="btn" id="save">I need to save this</button>
-            <button class="btn" id="upload">load!!!</button>
-            <button id="remove" class="btn">Remove aaaallll</button>
+            <div class="undo-redo-div">
+                <button id="undo" class="special-btn" title="Undos last action (You can use ctrl+z)">Undo</button>
+            </div>
+            <button id="reset" class="btn" title="Reset values of thickness and power to the defaults.">Reset Thickness and Power Values</button>
+            <button class="btn" id="save" title="Save current drawing and power and thickness settings to localstorage.">I need to save this</button>
+            <button class="btn" id="upload" title="Load drawing and power and thickness settings from localstorage.">load!!!</button>
+            <button id="remove" class="btn" title="Remove entire drawing (Use the key &quot;c&quot;)">Remove aaaallll</button>
         </div>
         <canvas style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1">This is a test canvas element.</canvas>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="index.js" defer></script>
 </body>
 
 </html>
