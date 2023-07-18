@@ -5,10 +5,12 @@ const thing = document.getElementById("tool");
 const type = document.getElementById("type");
 const powerEl = document.getElementById("power");
 const thicknessEl = document.getElementById("thickness");
+const undo = document.getElementById("undo");
+const redo = document.getElementById("redo");
 const canvasOffsetX = canvas.offsetLeft;
 const canvasOffsetY = canvas.offsetTop;
 canvas.width = window.innerWidth - canvasOffsetX - 20;
-canvas.height = window.innerHeight - canvasOffsetY - 25;
+canvas.height = window.innerHeight - canvasOffsetY;
 let isPainting = false;
 let lineWidth = 5;
 let startX;
@@ -18,6 +20,16 @@ let thickness;
 let pathsry = [];
 let pathRedo = [];
 let mouseover;
+
+window.onresize = () => {
+    canvas.width = window.innerWidth - canvasOffsetX - 20;
+    canvas.height = window.innerHeight - canvasOffsetY;
+}
+
+const removePathRedo = () => {
+    pathRedo = [];
+    redo.setAttribute("disabled", "");
+}
 const changeThickness = () => {
     if (type.value != 'stretcher') {
         thicknessEl.value = eval(`thickness.${type.value}`)
@@ -87,6 +99,8 @@ const popup = async (txt, icon, title, cbt, dbt) => {
 const load = (base64) => {
     let dataURL = localStorage.getItem("thingy");
     pathsry.push(dataURL);
+    undo.removeAttribute("disabled");
+    removePathRedo();
     console.log(dataURL)
     if (base64) {
         Swal.fire({
@@ -120,6 +134,8 @@ thing.addEventListener('click', e => {
     if (e.target.id === 'remove') {
         clear();
         pathsry.push(canvas.toDataURL());
+        undo.removeAttribute("disabled");
+        removePathRedo();
     }
 });
 thing.addEventListener("change", e => {
@@ -137,9 +153,7 @@ thing.addEventListener("change", e => {
         eval(`if (type.value != 'stretcher') thickness.${type.value} = e.target.value`)
     }
 })
-document.onkeydown = (e) => {
-    if (e.key == "c") clear();
-}
+
 canvas.addEventListener('mousedown', (e) => {
     if (mouseover == false) return;
     isPainting = true;
@@ -151,6 +165,7 @@ canvas.addEventListener('mouseup', () => {
     isPainting = false;
     ctx.beginPath();
     pathsry.push(canvas.toDataURL());
+    undo.removeAttribute("disabled");
 });
 canvas.addEventListener("mouseover", () => {
     mouseover = true;
@@ -163,7 +178,7 @@ canvas.addEventListener("mouseleave", () => {
 const draw = (e) => {
     // some code is from https://stackoverflow.com/a/16452675/15055490
     if (!isPainting && mouseover) return;
-    pathRedo = [];
+    removePathRedo();
     if (document.getElementById("mode").value == "erase") {
         ctx.globalCompositeOperation = "destination-out";
     } else {
@@ -218,21 +233,26 @@ function drawPaths() {
 
 function Undo() {
     if (pathsry.length == 0) return;
+    redo.removeAttribute("disabled");
     pathRedo.push(pathsry.pop());
+    if (pathsry.length == 0) undo.setAttribute("disabled", "");
     drawPaths();
 }
 
 function Redo() {
     if (pathRedo.length == 0) return;
+    undo.removeAttribute("disabled");
     pathsry.push(pathRedo.pop());
+    if (pathRedo.length == 0) redo.setAttribute("disabled", "");
     drawPaths();
 }
 
 document.getElementById("undo").addEventListener("click", Undo);
 document.getElementById("redo").addEventListener("click", Redo);
-document.onkeydown = (e) => {
+onkeydown = (e) => {
     if (e.ctrlKey && e.key == "z") Undo();
     if (e.ctrlKey && e.key == "y") Redo();
+    if (e.key == "c") clear();
 }
 
 // ctx.font = "30px Arial";

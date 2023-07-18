@@ -113,15 +113,15 @@
                 </select>
             </label>
             <div class="undo-redo-div">
-                <button id="undo" class="special-btn" title="Undos last action (You can use ctrl+z)">Undo</button>
-                <button id="redo" class="special-btn" title="Undos your undo (You can use ctrl+y)">Redo</button>
+                <button id="undo" class="special-btn" title="Undos last action (You can use ctrl+z)" disabled>Undo</button>
+                <button id="redo" class="special-btn" title="Undos your undo (You can use ctrl+y)" disabled>Redo</button>
             </div>
             <button id="reset" class="btn" title="Reset values of thickness and power to the defaults.">Reset Thickness and Power Values</button>
             <button class="btn" id="save" title="Save current drawing and power and thickness settings to localstorage.">I need to save this</button>
             <button class="btn" id="upload" title="Load drawing and power and thickness settings from localstorage.">load!!!</button>
             <button id="remove" class="btn" title="Remove entire drawing (Use the key &quot;c&quot;)">Remove aaaallll</button>
         </div>
-        <canvas style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1">This is a test canvas element.</canvas>
+        <canvas style="border: 10px ridge black; margin: 0; padding: 0;" title="very interesting" id="test1" width="800" height="800">This is a test canvas element.</canvas>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="index.js" defer></script>
