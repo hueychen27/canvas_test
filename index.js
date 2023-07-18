@@ -16,6 +16,7 @@ let startY;
 let power;
 let thickness;
 let pathsry = [];
+let pathRedo = [];
 let mouseover;
 const changeThickness = () => {
     if (type.value != 'stretcher') {
@@ -162,6 +163,7 @@ canvas.addEventListener("mouseleave", () => {
 const draw = (e) => {
     // some code is from https://stackoverflow.com/a/16452675/15055490
     if (!isPainting && mouseover) return;
+    pathRedo = [];
     if (document.getElementById("mode").value == "erase") {
         ctx.globalCompositeOperation = "destination-out";
     } else {
@@ -204,18 +206,33 @@ function drawPaths() {
     let img = new Image();
     img.src = pathsry[pathsry.length - 1];
     img.onload = () => {
+        ctx.globalCompositeOperation = "source-over";
         ctx.drawImage(img, 0, 0);
+        if (document.getElementById("mode").value == "erase") {
+            ctx.globalCompositeOperation = "destination-out";
+        } else {
+            ctx.globalCompositeOperation = "source-over";
+        }
     };
 }
 
 function Undo() {
-    pathsry.pop();
+    if (pathsry.length == 0) return;
+    pathRedo.push(pathsry.pop());
+    drawPaths();
+}
+
+function Redo() {
+    if (pathRedo.length == 0) return;
+    pathsry.push(pathRedo.pop());
     drawPaths();
 }
 
 document.getElementById("undo").addEventListener("click", Undo);
+document.getElementById("redo").addEventListener("click", Redo);
 document.onkeydown = (e) => {
     if (e.ctrlKey && e.key == "z") Undo();
+    if (e.ctrlKey && e.key == "y") Redo();
 }
 
 // ctx.font = "30px Arial";
